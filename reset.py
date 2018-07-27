@@ -2,19 +2,80 @@ import pymysql
 
 import secret
 import config
-from models.session import Session
-from models.comment import Comment
-from models.weibo import Weibo
-from models.todo import Todo
-from models.user import User
+
+
+def comment_sql_create():
+    sql = '''
+        CREATE TABLE `Comment` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `content` VARCHAR(64) NOT NULL,
+        `user_id` INT NOT NULL,
+        `user_name` VARCHAR(64) NOT NULL,
+        `weibo_id` INT NOT NULL,
+        `created_time` INT NOT NULL,
+        `updated_time` INT NOT NULL,
+        PRIMARY KEY (`id`)
+            )'''
+    return sql
+
+
+def session_sql_create():
+    sql = '''
+        CREATE TABLE `Session` (
+            `id` INT NOT NULL AUTO_INCREMENT,
+            `session_id` CHAR(16) NOT NULL,
+            `user_id` INT NOT NULL,
+            `expired_time` INT NOT NULL,
+            PRIMARY KEY (`id`)
+        )'''
+    return sql
+
+
+def user_sql_create():
+    sql = '''
+    CREATE TABLE `User` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `username` VARCHAR(45) NOT NULL,
+        `password` CHAR(64) NOT NULL,
+        `role` ENUM('guest', 'normal') NOT NULL,
+        PRIMARY KEY (`id`)
+    )'''
+    return sql
+
+
+def weibo_sql_create():
+    sql = '''
+        CREATE TABLE `Weibo` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `content` VARCHAR(64) NOT NULL,
+        `user_id` INT NOT NULL,
+        `user_name` VARCHAR(64) NOT NULL,
+        `created_time` INT NOT NULL,
+        `updated_time` INT NOT NULL,
+        PRIMARY KEY (`id`)
+        )'''
+    return sql
+
+
+def todo_sql_create():
+    sql = '''
+        CREATE TABLE `Todo` (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `title` VARCHAR(64) NOT NULL,
+        `user_id` INT NOT NULL,
+        `created_time` INT NOT NULL,
+        `updated_time` INT NOT NULL,
+        PRIMARY KEY (`id`)
+    )'''
+    return sql
 
 
 def recreate_table(cursor):
-    cursor.execute(User.sql_create)
-    cursor.execute(Session.sql_create)
-    cursor.execute(Weibo.sql_create)
-    cursor.execute(Comment.sql_create)
-    cursor.execute(Todo.sql_create)
+    cursor.execute(user_sql_create())
+    cursor.execute(session_sql_create())
+    cursor.execute(weibo_sql_create())
+    cursor.execute(comment_sql_create())
+    cursor.execute(todo_sql_create())
 
 
 def recreate_database():
@@ -43,8 +104,6 @@ def recreate_database():
 
     connection.commit()
     connection.close()
-
-
 
 
 if __name__ == '__main__':
